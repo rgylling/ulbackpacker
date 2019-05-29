@@ -9,7 +9,9 @@ module.exports = {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', type: 'text/css', href: '//fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900|Material+Icons' }
+
     ]
   },
   css: [

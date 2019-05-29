@@ -19,7 +19,23 @@
         </v-list-tile>
         <v-list-tile @click="">
           <v-list-tile-action>
+            <HomeIcon></HomeIcon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Home</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile href nuxt :to="{ name: 'login'}">
+          <v-list-tile-action>
             <LogInIcon></LogInIcon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Contact</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile href nuxt :to="{ name: 'new'}">
+          <v-list-tile-action>
+            <PlusSquareIcon></PlusSquareIcon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>Contact</v-list-tile-title>
@@ -27,32 +43,34 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <!-- <v-toolbar color="indigo" dark fixed app>
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title>Application</v-toolbar-title>
-    </v-toolbar> -->
     <v-content>
-      <v-container fluid fill-height>
+      <v-container grid-list-xl style="max-width: 1344px">
+        <v-layout v-if="$route && $route.name && $route.name != 'index'">
+          <v-flex>
+            <div class="my-3"><h1 class="font-weight-regular text-uppercase" style="color: #4a4a4a">{{$route.name}}</h1></div>
+          </v-flex>
+        </v-layout>
         <nuxt />
       </v-container>
     </v-content>
-    <!-- <v-footer color="indigo" app inset>
-      <span class="white--text">&copy; 2017</span>
-    </v-footer> -->
   </v-app>
 </template>
 
 <script>
-import { HomeIcon, LogInIcon } from 'vue-feather-icons'
+import { HomeIcon, LogInIcon, PlusSquareIcon } from 'vue-feather-icons'
 export default {
   components: {
     HomeIcon,
-    LogInIcon
+    LogInIcon,
+    PlusSquareIcon
   },
   data () {
     return {
       drawer: null
     }
+  },
+  mounted () {
+    console.log(this)
   }
 }
 </script>

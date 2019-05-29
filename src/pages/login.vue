@@ -3,8 +3,8 @@
     <v-flex lg6>
       <v-card flat height="400px">
           <v-layout fill-height align-center justify-center>
-            <v-flex lg6 fill-height style="background-image: url('https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80'); background-size: cover">
-              <div style="background-color: rgba(43,56,76,0.95); height: 100%">
+            <v-flex class="pa-0" lg6 fill-height style="background-image: url('https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80'); background-size: cover">
+              <div style="background-color: rgba(24, 38, 43, 0.91); height: 100%">
                 inner
               </div>
             </v-flex>

@@ -1,28 +1,26 @@
 <template>
-  <section>
-    <div>
-		<nuxt-link to="/about">about</nuxt-link>
 
-      <v-layout>
-        <v-flex>
-          <v-text-field v-model="email" label="Email">
-          </v-text-field>
-          <v-text-field v-model="password" label="Password">
-          </v-text-field>
-          <v-btn @click="loginUser">login</v-btn>
-        </v-flex>
-      </v-layout>
-    </div>
-  </section>
+  <v-layout row>
+    <v-flex lg12>
+      home
+    </v-flex>
+  </v-layout>
+
 </template>
 
 <script>
 
 export default {
+  head () {
+    return {
+      title: this.title
+    }
+  },
   data () {
     return {
       email: '',
-      password: ''
+      password: '',
+      title: 'Home'
     }
   },
   methods: {
@@ -34,6 +32,9 @@ export default {
 
       }
     }
+  },
+  mounted () {
+    console.log(this, 'hi')
   }
 };
 </script>
