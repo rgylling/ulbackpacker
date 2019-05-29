@@ -1,5 +1,5 @@
 {
-  "name": "ultralight backpacking",
+  "name": "ulbackpacking",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -12,7 +12,10 @@
   },
   "dependencies": {
     "@nuxtjs/vuetify": "^0.5.5",
-    "nuxt": "^2.3.4"
+    "firebase": "^6.1.0",
+    "nuxt": "^2.3.4",
+    "nuxt-fire": "^1.4.1",
+    "vue-feather-icons": "^4.21.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
@@ -22,6 +25,8 @@
     "eslint-loader": "^2.1.1",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-nuxt": "^0.3.0",
-    "eslint-plugin-vue": "^5.1.0"
+    "eslint-plugin-vue": "^5.1.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2"
   }
 }
