@@ -31,18 +31,18 @@ module.exports = {
           authDomain: 'ul-backpacker.firebaseapp.com',
           databaseURL: 'https://ul-backpacker.firebaseio.com',
           projectId: 'ul-backpacker',
-		  storageBucket: "ul-backpacker.appspot.com",
-		  messagingSenderId: "417461960380",
-		  appId: "1:417461960380:web:24734b2e110edb54"
+		  storageBucket: 'ul-backpacker.appspot.com',
+		  messagingSenderId: '417461960380',
+		  appId: '1:417461960380:web:24734b2e110edb54'
         },
         production: {
           apiKey: 'AIzaSyBRKVRN0Ic-D0gjXF110iYgiSV5yp2g5oA',
           authDomain: 'ul-backpacker.firebaseapp.com',
           databaseURL: 'https://ul-backpacker.firebaseio.com',
           projectId: 'ul-backpacker',
-		  storageBucket: "ul-backpacker.appspot.com",
-		  messagingSenderId: "417461960380",
-		  appId: "1:417461960380:web:24734b2e110edb54"
+		  storageBucket: 'ul-backpacker.appspot.com',
+		  messagingSenderId: '417461960380',
+		  appId: '1:417461960380:web:24734b2e110edb54'
         }
       }
     }]
@@ -55,8 +55,10 @@ module.exports = {
   vuetify: {
     materialIcons: true,
     css: true,
-    treeShaking: true // need to add dependencies
-  //  theme: { }
+    treeShaking: true, // need to add dependencies
+    theme: {
+      primary: '#3aafa9'
+    }
   },
   /*
   ** Build configuration
@@ -76,9 +78,6 @@ module.exports = {
         ]
       ]
     },
-    /*
-    ** Run ESLint on save
-    */
     extend (config, { isDev, isClient }) {
       if (isDev && isClient) {
         config.module.rules.push({
@@ -86,9 +85,9 @@ module.exports = {
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
           exclude: /(node_modules)/,
-		  options: {
-  	  		fix: true
-  }
+    		  options: {
+      	  		fix: true
+      }
         })
       }
     }

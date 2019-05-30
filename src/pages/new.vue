@@ -1,160 +1,221 @@
 <template>
-	<div>
-    <v-layout row wrap>
-      <v-flex lg12>
-		  <v-btn @click="writeToFirestore">
-			  clicky
-		  </v-btn>
-		  <span v-if="writeSuccessful">
-			  success
-		  </span>
-        <v-data-iterator
-          :items="items"
-          hide-actions
-          content-tag="v-layout"
-          row
-          wrap
-        >
-          <template v-slot:item="props">
-            <v-flex
-              xs12
-              sm6
-              md4
-              lg3
-            >
-              <v-card flat>
-                <v-card-title>
-                  <h1 class="font-weight-light">{{ props.item.name }}</h1>
-                </v-card-title>
-                <v-list dense>
-                <v-list-tile
-                >
-
-                <v-list-tile-content>
-                <v-list-tile-title>Calories</v-list-tile-title>
-                <v-list-tile-sub-title>some description</v-list-tile-sub-title>
-                </v-list-tile-content>
-
-                <v-list-tile-action>
-                  {{props.item.calories}}
-                </v-list-tile-action>
-                </v-list-tile>
-                </v-list>
-              </v-card>
+<div>
+  <v-layout row wrap>
+    <v-flex lg12>
+      <v-btn @click="addNewList">
+        Add new list
+      </v-btn>
+      <v-data-iterator :items="(lists)" hide-actions content-tag="div">
+        <template v-slot:item="props">
+          <v-layout row nowrap>
+            <v-flex align-center class="d-flex" lg3>
+              <div>
+                <h1 class="font-weight-light">
+									<editable :content="props.item.listName" @update="text = $event"></editable>
+                </h1>
+              </div>
             </v-flex>
-          </template>
-        </v-data-iterator>
+          </v-layout>
+          <v-layout row wrap>
+            <template v-for="(item, index) in props.item.gear">
+              <v-flex xs12 sm6 md4 lg4>
+                <v-card flat>
+                  <v-card-title>
+										<v-layout row>
+											<v-flex>
+												<h1 class="font-weight-light">
+													<editable :content=" item.categoryName" @update="text = $event"></editable>
+												</h1>
+											</v-flex>
+										</v-layout>
+                  </v-card-title>
+									<v-card-text>
+                  <v-list two-line>
+                    <template v-for="i in item.items">
+                      <v-list-tile avatar>
+												<v-list-tile-avatar size="40">
+													<h2 class="display-1">1</h2>
+												</v-list-tile-avatar>
+                        <v-list-tile-content>
+                          <v-list-tile-title>
+														<editable :content="i.name" @update="text = $event"></editable>
+													</v-list-tile-title>
+                          <v-list-tile-sub-title>
+														<editable :content="i.description" @update="text = $event"></editable>
+													</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                        <v-list-tile-action>
+													<div><editable :content="i.weight" @update="text = $event"></editable>{{i.measurement}}</div>
+                        </v-list-tile-action>
+                      </v-list-tile>
+											<v-divider inset>
+											</v-divider>
+                    </template>
+                  </v-list>
+								</v-card-text>
+								<v-card-actions>
+									<v-spacer>
+									</v-spacer>
+									<v-flex shrink>
+										<v-btn
+											fab
+											small
+											bottom
+											dark
+											color="teal"
+											right
+											@click="addNewGear(props.index ,index)"
+										>
+											<v-icon>add</v-icon>
+										</v-btn>
+									</v-flex>
+								</v-card-actions>
+                </v-card>
+              </v-flex>
+            </template>
+						<v-flex lg4>
+							<v-card tag="a" class="custom-nav-drawer" flat height="100%" @click="addNewCategory">
+								<v-card-text class="fill-height text-xs-center d-flex column align-center justify-center white--text" style="background-color: rgba(24, 38, 43, 0.91)">
+									<div>
+										<h2 class="font-weight-light mb-2">New Category</h2>
+										<div class=""><PlusSquareIcon width="50px" height="50px" color="rgba(255, 255, 255, 0.5)"></PlusSquareIcon></div>
+									</div>
+								</v-card-text>
+							</v-card>
+						</v-flex>
+          </v-layout>
+        </template>
+      </v-data-iterator>
+    </v-flex>
+  </v-layout>
+  <v-navigation-drawer v-model="drawer" right clipped app class="custom-nav-drawer">
+    <v-layout fill-height>
+      <v-flex style="background-color: rgba(24, 38, 43, 0.91)" fill-height>
+        <v-text-field label="test">
+        </v-text-field>
       </v-flex>
     </v-layout>
-	<v-navigation-drawer
-	v-model="drawer"
-	right
-	clipped
-	app
-	class="custom-nav-drawer"
-		>
-		<v-layout fill-height>
-		<v-flex style="background-color: rgba(24, 38, 43, 0.91)" fill-height>
-			<v-text-field label="test">
-			</v-text-field>
-		</v-flex>
-	</v-layout>
-		</v-navigation-drawer>
-	</div>
+  </v-navigation-drawer>
+</div>
 </template>
 
 <script>
-
+// Data structure should look something like this I am imagining
+// var lists =
+//   [
+//     {
+//       uid: '123kdijdsidj' || null <-- guest user
+//       listName: 'list',
+//       gear:
+//       [
+//         {
+//           categeoryName: 'Base',
+//           items: [
+//             {
+//               name: 'pants',
+//               description: 'some description',
+//               weight: '.08',
+//               measurement: 'oz'
+//             }
+//           ]
+//         }
+//       ]
+//     }
+//   ]
+import {
+  Edit2Icon,
+	PlusSquareIcon
+} from 'vue-feather-icons'
+import Editable from '@/components/editable.vue'
 export default {
-  head () {
+  components: {
+    Edit2Icon,
+		PlusSquareIcon,
+		Editable
+  },
+  head() {
     return {
       title: this.title
     }
   },
   data: () => ({
     title: 'New',
-	writeSuccessful: false,
-	drawer: true,
-    items: [
-      {
-        name: 'Base',
-        calories: 356,
-        fat: 16.0,
-        carbs: 49,
-        protein: 3.9,
-        sodium: 327,
-        calcium: '7%',
-        iron: '16%'
-      },
-      {
-        name: 'Consumables',
-        calories: 375,
-        fat: 0.0,
-        carbs: 94,
-        protein: 0.0,
-        sodium: 50,
-        calcium: '0%',
-        iron: '0%'
-      },
-      {
-        name: 'Worn',
-        calories: 392,
-        fat: 0.2,
-        carbs: 98,
-        protein: 0,
-        sodium: 38,
-        calcium: '0%',
-        iron: '2%'
-      },
-      {
-        name: 'Honeycomb',
-        calories: 408,
-        fat: 3.2,
-        carbs: 87,
-        protein: 6.5,
-        sodium: 562,
-        calcium: '0%',
-        iron: '45%'
+    editCatName: false,
+		editGear: [],
+    writeSuccessful: false,
+    drawer: true,
+    lists: []
+  }),
+  methods: {
+    async writeToFirestore() {
+
+      const ref = this.$fireStore.collection("gearList")
+
+      try {
+        await ref.add({
+          title: 'base',
+          items: [{
+            name: 'gloves',
+            description: 'some cool description here',
+            weight: '.8',
+            measurement: 'oz'
+          }]
+        })
+      } catch (e) {
+        // TODO: error handling
+        console.error(e)
       }
-    ]
-}),
-methods: {
-	async writeToFirestore() {
-
-	  const ref = this.$fireStore.collection("gearList")
-
-	  try {
-		await ref.add({
-		    title: 'base',
-			items: [
-				{
-					name: 'gloves',
-					description: 'some cool description here',
-					weight: '.8',
+      this.writeSuccessful = true
+      this.readFromFirestore()
+    },
+    async readFromFirestore() {
+      const messageRef = this.$fireStore.collection('gearList')
+      try {
+        const messageDoc = await messageRef.get().then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            console.log(`${doc.id} => ${doc.data().title}`);
+          });
+        })
+      } catch (e) {
+        alert(e)
+        return
+      }
+    },
+    addNewList() {
+      this.lists.push({
+        uid: '123kdijdsidj' || null,
+        listName: 'list',
+        gear: [{
+          categoryName: 'Base',
+          items: [{
+            name: 'pants',
+            description: 'some description',
+            weight: '.08',
+            measurement: 'oz'
+          }]
+        }]
+      })
+    },
+		addNewCategory () {
+			this.lists[0].gear.push({
+				categoryName: 'Base',
+				items: [{
+					name: 'pants',
+					description: 'some description',
+					weight: '.08',
 					measurement: 'oz'
-				}
-			]
-		})
-	  } catch (e) {
-		// TODO: error handling
-		console.error(e)
-	  }
-	  this.writeSuccessful = true
-	  this.readFromFirestore()
-  },
-  async readFromFirestore() {
-  const messageRef = this.$fireStore.collection('gearList')
-  try {
-    const messageDoc = await messageRef.get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${doc.data().title}`);
-    });
-	})
-  } catch (e) {
-  alert(e)
-  return
-  }
-}
+				}]
+			})
+		},
+		addNewGear (listIndex, index) {
+			console.log(listIndex)
+			this.lists[listIndex].gear[index].items.push({
+				name: 'pants',
+				description: 'some description',
+				weight: '.08',
+				measurement: 'oz'
+			})
+		}
   }
 }
 </script>

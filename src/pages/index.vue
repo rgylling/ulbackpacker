@@ -9,6 +9,7 @@
 </template>
 
 <script>
+var convert = require('convert-units')
 
 export default {
   head () {
@@ -18,23 +19,13 @@ export default {
   },
   data () {
     return {
-      email: '',
-      password: '',
       title: 'Home'
     }
   },
   methods: {
-    async loginUser () {
-      try {
-        const user = await this.$fireAuth.signInWithEmailAndPassword(this.email, this.password)
-        console.log(user)
-      } catch (err) {
-
-      }
-    }
   },
   mounted () {
-    console.log(this, 'hi')
+    window.convert = convert
   }
 };
 </script>

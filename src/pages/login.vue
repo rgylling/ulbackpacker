@@ -10,11 +10,34 @@
             </v-flex>
             <v-flex lg6>
               <v-card-text>
-                <v-text-field v-model="email" label="Email">
-                </v-text-field>
-                <v-text-field v-model="password" label="Password">
-                </v-text-field>
-                <v-btn @click="loginUser">login</v-btn>
+                <template v-if="!user">
+                  <v-text-field v-model="email" label="Email">
+                  </v-text-field>
+                  <v-text-field v-model="password" label="Password">
+                  </v-text-field>
+                  <v-btn @click="submit">login</v-btn>
+                </template>
+                <template v-else>
+                  <div class="text-xs-center">
+                    <v-layout>
+                      <v-flex>
+                        <h1 class="font-weight-light">Welcome</h1>
+                      </v-flex>
+                    </v-layout>
+                    <v-layout>
+                      <v-flex>
+                        <h3 class="font-weight-light">{{ user.email }}!</h3>
+                      </v-flex>
+                    </v-layout>
+                    <v-layout>
+                      <v-flex>
+                    <v-btn>
+                      Create a list
+                    </v-btn>
+                    </v-flex>
+                  </v-layout>
+                  </div>
+                </template>
               </v-card-text>
             </v-flex>
           </v-layout>
@@ -24,22 +47,44 @@
 </template>
 
 <script>
-
+import { mapState, mapActions } from 'vuex'
 export default {
   data () {
     return {
       email: '',
-      password: ''
+      password: '',
+      loading: false
     }
   },
+  computed: {
+    ...mapState('user', ['user'])
+  },
   methods: {
-    async loginUser () {
-      try {
-        const user = await this.$fireAuth.signInWithEmailAndPassword(this.email, this.password)
-        console.log(user)
-      } catch (err) {
+    ...mapActions('user', [
+      'login'
+    ]),
+    submit () {
+      console.log(this.email, this.password)
+      this.$fireAuth.signInWithEmailAndPassword(this.email, this.password).then((firebaseUser) => {
+        console.log(firebaseUser)
+        return this.login(firebaseUser.user)
+      }).then(() => {
+        console.log('then')
+        // this.$router.push('/protected')
+      }).catch((error) => {
+        console.log('catch')
 
-      }
+        console.log(error.message)
+      })
+    },
+    async fbGoogleLogin() {
+      const { user } = await this.$fireAuth.signInWithPopup(googleProvider)
+      await this.login(user)
+      // this.$router.push('/protected')
+    },
+    async fbGoogleLogout() {
+      await this.logout()
+      this.$router.push('/')
     }
   }
 };

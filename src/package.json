@@ -12,13 +12,17 @@
   },
   "dependencies": {
     "@nuxtjs/vuetify": "^0.5.5",
+    "cookieparser": "^0.1.0",
     "firebase": "^6.1.0",
+    "js-cookie": "^2.2.0",
+    "jwt-decode": "^2.2.0",
     "nuxt": "^2.3.4",
     "nuxt-fire": "^1.4.1",
     "vue-feather-icons": "^4.21.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
+    "convert-units": "^2.3.4",
     "eslint": "^5.3.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-import-resolver-webpack": "^0.10.1",
