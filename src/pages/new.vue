@@ -1,7 +1,13 @@
 <template>
-
+	<div>
     <v-layout row wrap>
       <v-flex lg12>
+		  <v-btn @click="writeToFirestore">
+			  clicky
+		  </v-btn>
+		  <span v-if="writeSuccessful">
+			  success
+		  </span>
         <v-data-iterator
           :items="items"
           hide-actions
@@ -40,6 +46,21 @@
         </v-data-iterator>
       </v-flex>
     </v-layout>
+	<v-navigation-drawer
+	v-model="drawer"
+	right
+	clipped
+	app
+	class="custom-nav-drawer"
+		>
+		<v-layout fill-height>
+		<v-flex style="background-color: rgba(24, 38, 43, 0.91)" fill-height>
+			<v-text-field label="test">
+			</v-text-field>
+		</v-flex>
+	</v-layout>
+		</v-navigation-drawer>
+	</div>
 </template>
 
 <script>
@@ -52,6 +73,8 @@ export default {
   },
   data: () => ({
     title: 'New',
+	writeSuccessful: false,
+	drawer: true,
     items: [
       {
         name: 'Base',
@@ -94,10 +117,52 @@ export default {
         iron: '45%'
       }
     ]
-  })
-};
+}),
+methods: {
+	async writeToFirestore() {
+
+	  const ref = this.$fireStore.collection("gearList")
+
+	  try {
+		await ref.add({
+		    title: 'base',
+			items: [
+				{
+					name: 'gloves',
+					description: 'some cool description here',
+					weight: '.8',
+					measurement: 'oz'
+				}
+			]
+		})
+	  } catch (e) {
+		// TODO: error handling
+		console.error(e)
+	  }
+	  this.writeSuccessful = true
+	  this.readFromFirestore()
+  },
+  async readFromFirestore() {
+  const messageRef = this.$fireStore.collection('gearList')
+  try {
+    const messageDoc = await messageRef.get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data().title}`);
+    });
+	})
+  } catch (e) {
+  alert(e)
+  return
+  }
+}
+  }
+}
 </script>
 
-<style>
+<style lang="stylus" scoped>
+.custom-nav-drawer {
+	background-image: url('https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80');
+	background-size: cover
+}
 
 </style>

@@ -11,7 +11,7 @@
       <v-list dense>
         <v-list-tile @click="">
           <v-list-tile-action>
-            <HomeIcon></HomeIcon>
+            <v-img :src="require('@/assets/test-logo.png')" />
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>Home</v-list-tile-title>
@@ -43,6 +43,14 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
+	<!-- <v-navigation-drawer
+	v-model="drawer"
+	right
+	clipped
+	app
+		>
+		asdf
+		</v-navigation-drawer> -->
     <v-content>
       <v-container grid-list-xl style="max-width: 1344px">
         <v-layout v-if="$route && $route.name && $route.name != 'index'">
