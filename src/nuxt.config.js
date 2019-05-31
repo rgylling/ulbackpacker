@@ -47,6 +47,9 @@ module.exports = {
       }
     }]
   ],
+  plugins: [
+    '~/plugins/tour'
+  ],
   router: {
     middleware: 'test'
   },
@@ -57,7 +60,10 @@ module.exports = {
     css: true,
     treeShaking: true, // need to add dependencies
     theme: {
-      primary: '#3aafa9'
+      primary: '#3aafa9',
+      error: '#FF5252',
+      secondary: '#2B7A78'
+
     }
   },
   /*

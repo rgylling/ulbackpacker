@@ -2,9 +2,9 @@
 <div>
   <v-layout row wrap>
     <v-flex lg12>
-      <v-btn @click="addNewList">
+      <!-- <v-btn @click="addNewList">
         Add new list
-      </v-btn>
+      </v-btn> -->
       <v-data-iterator :items="(lists)" hide-actions content-tag="div">
         <template v-slot:item="props">
           <v-layout row nowrap>
@@ -18,23 +18,25 @@
           </v-layout>
           <v-layout row wrap>
             <template v-for="(item, index) in props.item.gear">
-              <v-flex xs12 sm6 md4 lg4>
-                <v-card flat>
+              <v-flex xs12 sm6 md4 lg6>
+                <v-card>
                   <v-card-title>
 										<v-layout row>
 											<v-flex>
-												<h1 class="font-weight-light">
+												<h2 class="font-weight-light">
 													<editable :content=" item.categoryName" @update="item.categoryName = $event"></editable>
-												</h1>
+												</h2>
 											</v-flex>
 										</v-layout>
                   </v-card-title>
 									<v-card-text>
-                  <v-list two-line>
+                  <v-list three-line>
                     <template v-for="i in item.items">
                       <v-list-tile avatar>
 												<v-list-tile-avatar size="40">
-													<h2 class="display-1">1</h2>
+													<h2 class="display-3 font-weight-medium">
+                            <editable :content="i.quantity" @update="i.quantity = $event"></editable>
+                          </h2>
 												</v-list-tile-avatar>
                         <v-list-tile-content>
                           <v-list-tile-title>
@@ -43,9 +45,20 @@
                           <v-list-tile-sub-title>
 														<editable :content="i.description" @update="i.description = $event"></editable>
 													</v-list-tile-sub-title>
+                          <v-list-tile-sub-title>
+                          <a>link</a>
+                          </v-list-tile-sub-title>
                         </v-list-tile-content>
                         <v-list-tile-action>
-													<div><editable :content="i.weight" @update="i.weight = $event"></editable>{{i.uom}}</div>
+													<v-layout class="headline">
+                            <v-flex class="d-flex">
+                              <editable :content="i.weight" @update="i.weight = $event"></editable>
+                              <v-select v-model="i.uom" solo flat class="pa-0 ma-0 custom-select" hide-details style="width: 50px" :items="['OZ', 'KG', 'LB']">
+                              </v-select>
+                            </v-flex>
+                          </v-layout>
+                          <!-- <v-select style="width: 50px" :items="['oz', 'kg', 'lb']">
+                          </v-select> -->
                         </v-list-tile-action>
                       </v-list-tile>
 											<v-divider inset>
@@ -62,7 +75,7 @@
 											small
 											bottom
 											dark
-											color="teal"
+											color="secondary"
 											right
 											@click="addNewGear(props.index ,index)"
 										>
@@ -74,7 +87,7 @@
               </v-flex>
             </template>
 						<v-flex lg4>
-							<v-card tag="a" class="custom-nav-drawer" flat height="100%" @click="addNewCategory">
+							<v-card tag="a" class="custom-nav-drawer" height="100%" @click="addNewCategory">
 								<v-card-text class="fill-height text-xs-center d-flex column align-center justify-center white--text" style="background-color: rgba(24, 38, 43, 0.91)">
 									<div>
 										<h2 class="font-weight-light mb-2">New Category</h2>
@@ -91,14 +104,14 @@
 		<v-btn @click="getAllTest">Git all</v-btn>
 
   </v-layout>
-  <v-navigation-drawer v-model="drawer" right clipped app class="custom-nav-drawer">
+  <!-- <v-navigation-drawer v-model="drawer" right clipped app class="custom-nav-drawer">
     <v-layout fill-height>
       <v-flex style="background-color: rgba(24, 38, 43, 0.91)" fill-height>
         <v-text-field label="test">
         </v-text-field>
       </v-flex>
     </v-layout>
-  </v-navigation-drawer>
+  </v-navigation-drawer> -->
 </div>
 </template>
 
@@ -149,7 +162,36 @@ export default {
 		editGear: [],
     writeSuccessful: false,
     drawer: true,
-    lists: []
+    sampleList: {
+      uid: null,
+      listName: 'Sample List Name',
+      gear: [{
+        categoryName: 'Sample Category',
+        items: [{
+          name: 'pants',
+          description: 'some description',
+          weight: '.08',
+          uom: 'OZ',
+          link: 'asd@asd.com',
+          quantity: 1
+        }]
+      }]
+    },
+    lists: [{
+      uid: null,
+      listName: 'Sample List Name',
+      gear: [{
+        categoryName: 'Sample Category',
+        items: [{
+          name: 'pants',
+          description: 'some description',
+          weight: '.08',
+          uom: 'OZ',
+          link: 'asd@asd.com',
+          quantity: 1
+        }]
+      }]
+    }]
   }),
 	computed: {
 		...mapState('modules/user', ['user'])
@@ -205,7 +247,8 @@ export default {
 					name: 'pants',
 					description: 'some description',
 					weight: '.08',
-					measurement: 'oz'
+					uom: 'OZ',
+          quantity: 1
 				}]
 			})
 		},
@@ -237,6 +280,13 @@ export default {
 .custom-nav-drawer {
 	background-image: url('https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80');
 	background-size: cover
+}
+
+.custom-select {
+  >>>.v-input__control {
+    min-height: unset;
+    margin-top: 3px;
+  }
 }
 
 </style>

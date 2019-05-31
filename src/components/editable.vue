@@ -8,7 +8,7 @@ export default {
   props: {
     content: {
       default: null,
-      type: String
+      type: [String, Number]
     }
   },
   data () {
