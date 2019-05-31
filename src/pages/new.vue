@@ -11,7 +11,7 @@
             <v-flex align-center class="d-flex" lg3>
               <div>
                 <h1 class="font-weight-light">
-									<editable :content="props.item.listName" @update="text = $event"></editable>
+									<editable :content="props.item.listName" @update="props.item.listName = $event"></editable>
                 </h1>
               </div>
             </v-flex>
@@ -24,7 +24,7 @@
 										<v-layout row>
 											<v-flex>
 												<h1 class="font-weight-light">
-													<editable :content=" item.categoryName" @update="text = $event"></editable>
+													<editable :content=" item.categoryName" @update="item.categoryName = $event"></editable>
 												</h1>
 											</v-flex>
 										</v-layout>
@@ -38,14 +38,14 @@
 												</v-list-tile-avatar>
                         <v-list-tile-content>
                           <v-list-tile-title>
-														<editable :content="i.name" @update="text = $event"></editable>
+														<editable :content="i.name" @update="i.name = $event"></editable>
 													</v-list-tile-title>
                           <v-list-tile-sub-title>
-														<editable :content="i.description" @update="text = $event"></editable>
+														<editable :content="i.description" @update="i.description = $event"></editable>
 													</v-list-tile-sub-title>
                         </v-list-tile-content>
                         <v-list-tile-action>
-													<div><editable :content="i.weight" @update="text = $event"></editable>{{i.measurement}}</div>
+													<div><editable :content="i.weight" @update="i.weight = $event"></editable>{{i.uom}}</div>
                         </v-list-tile-action>
                       </v-list-tile>
 											<v-divider inset>
@@ -87,6 +87,9 @@
         </template>
       </v-data-iterator>
     </v-flex>
+		<v-btn @click="writeToFirestore">Save</v-btn>
+		<v-btn @click="getAllTest">Git all</v-btn>
+
   </v-layout>
   <v-navigation-drawer v-model="drawer" right clipped app class="custom-nav-drawer">
     <v-layout fill-height>
@@ -101,7 +104,7 @@
 
 <script>
 // Data structure should look something like this I am imagining
-// var lists =
+// var gearList =
 //   [
 //     {
 //       uid: '123kdijdsidj' || null <-- guest user
@@ -115,7 +118,8 @@
 //               name: 'pants',
 //               description: 'some description',
 //               weight: '.08',
-//               measurement: 'oz'
+//               uom: 'oz',
+//							link: ''
 //             }
 //           ]
 //         }
@@ -127,6 +131,7 @@ import {
 	PlusSquareIcon
 } from 'vue-feather-icons'
 import Editable from '@/components/editable.vue'
+import { mapState } from 'vuex'
 export default {
   components: {
     Edit2Icon,
@@ -146,21 +151,16 @@ export default {
     drawer: true,
     lists: []
   }),
+	computed: {
+		...mapState('modules/user', ['user'])
+	},
   methods: {
     async writeToFirestore() {
 
       const ref = this.$fireStore.collection("gearList")
 
       try {
-        await ref.add({
-          title: 'base',
-          items: [{
-            name: 'gloves',
-            description: 'some cool description here',
-            weight: '.8',
-            measurement: 'oz'
-          }]
-        })
+        await ref.add(this.lists[0])
       } catch (e) {
         // TODO: error handling
         console.error(e)
@@ -173,7 +173,7 @@ export default {
       try {
         const messageDoc = await messageRef.get().then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            console.log(`${doc.id} => ${doc.data().title}`);
+            console.log(`${doc.id} => ${doc.data().listName}`);
           });
         })
       } catch (e) {
@@ -182,8 +182,9 @@ export default {
       }
     },
     addNewList() {
+			console.log(this.uid)
       this.lists.push({
-        uid: '123kdijdsidj' || null,
+        uid: this.user.uid || null,
         listName: 'list',
         gear: [{
           categoryName: 'Base',
@@ -191,7 +192,8 @@ export default {
             name: 'pants',
             description: 'some description',
             weight: '.08',
-            measurement: 'oz'
+						uom: 'oz',
+						link: 'asd@asd.com'
           }]
         }]
       })
@@ -215,6 +217,17 @@ export default {
 				weight: '.08',
 				measurement: 'oz'
 			})
+		},
+		getAllTest () {
+			const messageRef = this.$fireStore.collection('gearList')
+			console.log(messageRef)
+			var query = messageRef.where("uid", "==", this.user.uid).get().then((querySnapshot) => {
+				querySnapshot.forEach((doc) => {
+					console.log(doc.data())
+				});
+			})
+			console.log(query)
+			return
 		}
   }
 }

@@ -57,10 +57,10 @@ export default {
     }
   },
   computed: {
-    ...mapState('user', ['user'])
+    ...mapState('modules/user', ['user'])
   },
   methods: {
-    ...mapActions('user', [
+    ...mapActions('modules/user', [
       'login'
     ]),
     submit () {
