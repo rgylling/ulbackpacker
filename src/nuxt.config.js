@@ -1,4 +1,8 @@
 module.exports = {
+	generate: {
+	fallback: true, // if you want to use '404.html' instead of the default '200.html'
+},
+debug: true,
   /*
   ** Headers of the page
   */
@@ -48,8 +52,11 @@ module.exports = {
     }]
   ],
   plugins: [
-    '~/plugins/tour'
+		{ src: '~/plugins/tour.js', ssr: false }
   ],
+	plugins: [
+		{ src: '~/plugins/autowidth.js', ssr: false }
+	],
   router: {
     middleware: 'test'
   },

@@ -9,14 +9,9 @@
 </template>
 
 <script>
-var convert = require('convert-units')
 
 export default {
-  head () {
-    return {
-      title: this.title
-    }
-  },
+
   data () {
     return {
       title: 'Home'
@@ -25,7 +20,6 @@ export default {
   methods: {
   },
   mounted () {
-    window.convert = convert
   }
 };
 </script>

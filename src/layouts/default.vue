@@ -57,7 +57,8 @@
 
     >
       <div style="border-bottom: solid 1px rgba(23, 37, 42, 0.08)" class="pa-4 ma-1">
-        <v-img :src="require('@/assets/test-logo.png')" />
+				<nuxt-link to="/"><v-img class="clickable" :src="require('@/assets/test-logo.png')" /></nuxt-link>
+
       </div>
       <v-list three-line style="height: 100%">
         <!-- <v-list-tile class="my-4" exact href nuxt :to="{ name: 'index'}">
@@ -70,7 +71,7 @@
             </v-layout>
           </v-flex>
         </v-list-tile> -->
-        <v-list-tile class="my-4 testing123" exact href nuxt :to="{ path: '/lists'}">
+        <v-list-tile class="testing123" exact href nuxt :to="{ path: '/lists'}">
           <div class="inner">
           <v-flex>
             <v-layout column align-center class="text-xs-center">
@@ -83,7 +84,7 @@
           </v-flex>
           </div>
         </v-list-tile>
-        <v-list-tile class="my-4 testing123" exact href nuxt :to="{ path: '/lists/new'}">
+        <v-list-tile class="testing123" exact href nuxt :to="{ path: '/lists/new'}">
           <div class="inner">
 
           <v-flex>

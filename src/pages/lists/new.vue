@@ -5,13 +5,18 @@
       <!-- <v-btn @click="addNewList">
         Add new list
       </v-btn> -->
+			total pack weight: {{totalWeight || 0}}OZ
+			<template v-for="cat in eachCategoryWeight">
+				Cat: {{cat.catName}}
+				Weight: {{cat.total || 0}}OZ
+			</template>
       <v-data-iterator :items="(lists)" hide-actions content-tag="div">
         <template v-slot:item="props">
           <v-layout row nowrap>
             <v-flex align-center class="d-flex" lg3>
               <div>
                 <h1 class="font-weight-light">
-									<editable :content="props.item.listName" @update="props.item.listName = $event"></editable>
+									<editable v-model="props.item.listName"></editable>
                 </h1>
               </div>
             </v-flex>
@@ -24,7 +29,7 @@
 										<v-layout row>
 											<v-flex>
 												<h2 class="font-weight-light">
-													<editable :content=" item.categoryName" @update="item.categoryName = $event"></editable>
+													<editable v-model="item.categoryName"></editable>
 												</h2>
 											</v-flex>
 										</v-layout>
@@ -33,17 +38,17 @@
                   <v-list three-line>
                     <template v-for="i in item.items">
                       <v-list-tile avatar>
-												<v-list-tile-avatar size="40">
+												<v-list-tile-avatar size="56">
 													<h2 class="display-3 font-weight-medium">
-                            <editable :content="i.quantity" @update="i.quantity = $event"></editable>
+                            <editable number v-model="i.quantity" maxWidth="56px" minWidth="56px"></editable>
                           </h2>
 												</v-list-tile-avatar>
                         <v-list-tile-content>
                           <v-list-tile-title>
-														<editable :content="i.name" @update="i.name = $event"></editable>
+														<editable v-model="i.name"></editable>
 													</v-list-tile-title>
                           <v-list-tile-sub-title>
-														<editable :content="i.description" @update="i.description = $event"></editable>
+														<editable v-model="i.description"></editable>
 													</v-list-tile-sub-title>
                           <v-list-tile-sub-title>
                           <a>link</a>
@@ -52,7 +57,7 @@
                         <v-list-tile-action>
 													<v-layout class="headline">
                             <v-flex class="d-flex">
-                              <editable :content="i.weight" @update="i.weight = $event"></editable>
+                              <editable v-model="i.weight" number maxWidth="65px"></editable>
                               <v-select v-model="i.uom" solo flat class="pa-0 ma-0 custom-select" hide-details style="width: 50px" :items="['OZ', 'KG', 'LB']">
                               </v-select>
                             </v-flex>
@@ -112,6 +117,19 @@
       </v-flex>
     </v-layout>
   </v-navigation-drawer> -->
+	<v-footer app inset class="custom-nav-drawer" height="200px" style="background-position: 50% 50%">
+		<v-layout class="pa-2" fill-height row style="background-color: rgba(24, 38, 43, 0.91)">
+			<v-flex lg4>
+				<v-card flat color="transparent" dark>
+					<v-card-text>
+						<h1 class="font-weight-light">Total Pack Weight:</h1>
+						<div class="display-1">{{totalWeight || 0}}OZ</div>
+					</v-card-text>
+
+				</v-card>
+			</v-flex>
+		</v-layout>
+	</v-footer>
 </div>
 </template>
 
@@ -130,7 +148,7 @@
 //             {
 //               name: 'pants',
 //               description: 'some description',
-//               weight: '.08',
+//               weight: '.8',
 //               uom: 'oz',
 //							link: ''
 //             }
@@ -145,6 +163,8 @@ import {
 } from 'vue-feather-icons'
 import Editable from '@/components/editable.vue'
 import { mapState } from 'vuex'
+const convert = require('convert-units')
+
 export default {
   components: {
     Edit2Icon,
@@ -170,7 +190,7 @@ export default {
         items: [{
           name: 'pants',
           description: 'some description',
-          weight: '.08',
+          weight: '.8',
           uom: 'OZ',
           link: 'asd@asd.com',
           quantity: 1
@@ -185,7 +205,7 @@ export default {
         items: [{
           name: 'pants',
           description: 'some description',
-          weight: '.08',
+          weight: '.8',
           uom: 'OZ',
           link: 'asd@asd.com',
           quantity: 1
@@ -194,9 +214,53 @@ export default {
     }]
   }),
 	computed: {
-		...mapState('modules/user', ['user'])
+		...mapState('modules/user', ['user']),
+		totalWeight () {
+			const newList = this.lists.map((list) => {
+				return list.gear.map((g) => {
+					return g.items.map((item) => {
+						return {
+							weight: item.weight * item.quantity,
+							uom: item.uom.toLowerCase()
+						}
+					})
+				})
+			})
+			return this.flatten(newList).map(list => {
+				console.log(list)
+				return convert(list.weight).from(list.uom).to('oz')
+			}).reduce((a,b) => {
+				return Number(a) + Number(b)
+			},0)
+		},
+		eachCategoryWeight () {
+			const newList = this.lists.map((list) => {
+				return list.gear.map((g) => {
+					return {
+						catName: g.categoryName,
+						items: g.items
+					}
+				})
+			})
+			return this.flatten(newList).map(obj => {
+				return {
+					catName: obj.catName,
+					total: obj.items.map(item => {
+						return convert(item.weight * item.quantity).from(item.uom.toLowerCase()).to('oz')
+					}).reduce((a,b) => {
+						return Number(a) + Number(b)
+					}, 0)
+				}
+			})
+			// [{cat name, items: []}]
+			// need to return something like {catName: name totalWeight: 123oz}
+		}
 	},
   methods: {
+		flatten (arr) {
+			const self = this
+			return arr.reduce((a, b) => a.concat(Array.isArray(b) ? self.flatten(b) : b), [])
+		},
     async writeToFirestore() {
 
       const ref = this.$fireStore.collection("gearList")
@@ -233,7 +297,7 @@ export default {
           items: [{
             name: 'pants',
             description: 'some description',
-            weight: '.08',
+            weight: '.8',
 						uom: 'oz',
 						link: 'asd@asd.com'
           }]
@@ -246,7 +310,7 @@ export default {
 				items: [{
 					name: 'pants',
 					description: 'some description',
-					weight: '.08',
+					weight: '.8',
 					uom: 'OZ',
           quantity: 1
 				}]
@@ -257,8 +321,9 @@ export default {
 			this.lists[listIndex].gear[index].items.push({
 				name: 'pants',
 				description: 'some description',
-				weight: '.08',
-				measurement: 'oz'
+				weight: '.8',
+				uom: 'OZ',
+				quantity: 1
 			})
 		},
 		getAllTest () {

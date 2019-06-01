@@ -18,7 +18,9 @@
     "jwt-decode": "^2.2.0",
     "nuxt": "^2.3.4",
     "nuxt-fire": "^1.4.1",
-    "vue-feather-icons": "^4.21.0"
+    "vue-feather-icons": "^4.21.0",
+    "vue-input-autowidth": "^1.0.5",
+    "vue-tour": "^1.1.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
@@ -31,7 +33,6 @@
     "eslint-plugin-nuxt": "^0.3.0",
     "eslint-plugin-vue": "^5.1.0",
     "stylus": "^0.54.5",
-    "stylus-loader": "^3.0.2",
-    "vue-tour": "^1.1.0"
+    "stylus-loader": "^3.0.2"
   }
 }
