@@ -58,7 +58,7 @@ debug: true,
 		{ src: '~/plugins/autowidth.js', ssr: false }
 	],
   router: {
-    middleware: 'test'
+    middleware: 'fire'
   },
 
 // Vuetify options
